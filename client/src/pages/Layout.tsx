@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { Link, Outlet } from 'react-router-dom'
-import { BsLightbulbFill } from 'react-icons/bs'
+import { useState } from "react"
+import { Link, Outlet } from "react-router-dom"
+import { BsLightbulbFill } from "react-icons/bs"
+import Logo from "../assets/Logo.png"
 
 const Layout = () => {
   const [darkToggle, setDarkToggle] = useState(false)
@@ -12,14 +13,14 @@ const Layout = () => {
 
   return (
     <>
-      <div className={`${darkToggle && 'dark'}`}>
+      <div className={`${darkToggle && "dark"}`}>
         <nav
           className={`px-2 bg-white dark:bg-slate-800 border-gray-200  md:dark:bg-slate-900 dark:border-gray-700`}
         >
           <div className="container flex flex-wrap items-center justify-between mx-auto">
             <a href="#" className="flex items-center">
               <img
-                src="https://flowbite.com/docs/images/logo.svg"
+                src={Logo}
                 className="h-6 mr-3 sm:h-10"
                 alt="Flowbite Logo"
               />
@@ -101,13 +102,13 @@ const Layout = () => {
                     <div
                       id="dropdown"
                       className={`z-10 bg-white rounded divide-y divide-gray-100 shadow ${
-                        isOpen ? 'block' : 'hidden'
+                        isOpen ? "block" : "hidden"
                       }`}
                     >
                       <ul className="absolute z-10 bg-white rounded divide-y divide-gray-100 shadow ">
                         <li>
                           <Link
-                            to="/signin"
+                            to="/login"
                             className="block py-2 px-6 hover:bg-gray-100 bg-white rounded-sm"
                           >
                             Sign In
