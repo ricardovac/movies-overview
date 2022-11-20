@@ -106,18 +106,18 @@ const Layout = () => {
                     >
                       <ul className="absolute z-10 bg-white rounded divide-y divide-gray-100 shadow ">
                         <li>
-                          <a
-                            href="#"
+                          <Link
+                            to="/signin"
                             className="block py-2 px-6 hover:bg-gray-100 bg-white rounded-sm"
                           >
                             Sign In
-                          </a>
-                          <a
-                            href="#"
+                          </Link>
+                          <Link
+                            to="/earnings"
                             className="block py-2 px-6 hover:bg-gray-100 bg-white rounded-sm"
                           >
                             Earnings
-                          </a>
+                          </Link>
                         </li>
                       </ul>
                     </div>
