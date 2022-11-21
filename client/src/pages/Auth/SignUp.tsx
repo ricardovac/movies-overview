@@ -1,17 +1,19 @@
-import { ErrorMessage, Field, Form, Formik } from "formik"
-import React, { FunctionComponent, useState } from "react"
-import { BsLightbulbFill } from "react-icons/bs"
-import { useNavigate } from "react-router-dom"
-import * as yup from "yup"
-import Logo from "../../assets/Logo.png"
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import React, { FunctionComponent, useState } from "react";
+import { BsLightbulbFill } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
+import * as yup from "yup";
+import Logo from "../../assets/Logo.png";
 
 interface Props {
-  Icon: React.ElementType
+  Icon: React.ElementType;
 }
 
 const SignUp: FunctionComponent<Props> = ({ Icon }) => {
-  const [darkToggle, setDarkToggle] = useState(false)
-  const navigate = useNavigate()
+  const [darkToggle, setDarkToggle] = useState(false);
+  const navigate = useNavigate();
+  const [error, setError] = useState(null);
+  const [user, setUser] = useState({ loggedIn: null });
 
   const schema = yup.object({
     username: yup
@@ -24,16 +26,16 @@ const SignUp: FunctionComponent<Props> = ({ Icon }) => {
       .required("Password required!")
       .min(6, "Password too short!")
       .max(28, "Password too long!"),
-  })
+  });
 
   const initialValues = {
     username: "",
     password: "",
-  }
+  };
 
   const renderError = (message) => (
     <p className="text-red-500 mt-2">{message}</p>
-  )
+  );
 
   return (
     <div className={`${darkToggle && "dark"}`}>
@@ -41,8 +43,35 @@ const SignUp: FunctionComponent<Props> = ({ Icon }) => {
         initialValues={initialValues}
         validationSchema={schema}
         onSubmit={(values, actions) => {
-          alert(JSON.stringify(values, null, 2))
-          actions.resetForm()
+          alert(JSON.stringify(values, null, 2));
+          const vals = { ...values };
+          actions.resetForm();
+          fetch("http://localhost:4000/auth/signup", {
+            method: "POST",
+            // credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(vals),
+          })
+            .catch((err) => {
+              return;
+            })
+            .then((res) => {
+              if (!res || !res.ok || res.status >= 400) {
+                return;
+              }
+              return res.json();
+            })
+            .then((data) => {
+              if (!data) return;
+              setUser({ ...data });
+              if (data.status) {
+                setError(data.status);
+              } else if (data.loggedIn) {
+                navigate("/");
+              }
+            });
         }}
       >
         <Form>
@@ -52,7 +81,7 @@ const SignUp: FunctionComponent<Props> = ({ Icon }) => {
               type="button"
               className="text-gray-500 dark:text-gray-400 hover:bg-slate-700 dark:hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-700 dark:focus:ring-gray-200 rounded-lg text-sm p-2.5"
               onClick={() => {
-                setDarkToggle(!darkToggle)
+                setDarkToggle(!darkToggle);
               }}
             >
               <BsLightbulbFill className="m-0 p-0 text-xl" />
@@ -64,7 +93,7 @@ const SignUp: FunctionComponent<Props> = ({ Icon }) => {
               alt="logo"
               className="h-14 cursor-pointer"
               onClick={() => {
-                navigate("/")
+                navigate("/");
               }}
             />
           </div>
@@ -117,7 +146,7 @@ const SignUp: FunctionComponent<Props> = ({ Icon }) => {
         </Form>
       </Formik>
     </div>
-  )
-}
+  );
+};
 
-export default SignUp
+export default SignUp;
