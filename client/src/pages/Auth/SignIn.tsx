@@ -4,12 +4,13 @@ import { BsLightbulbFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import Logo from "../../assets/Logo.png";
+import { AccountContext } from "../../components/AccountContext";
 
 const SignIn = () => {
   const [darkToggle, setDarkToggle] = useState(false);
   const navigate = useNavigate();
   const [error, setError] = useState(null);
-  const [user, setUser] = useState({ loggedIn: null });
+  const { setUser } = useContext(AccountContext);
 
   const schema = yup.object({
     username: yup
@@ -38,19 +39,19 @@ const SignIn = () => {
       <Formik
         initialValues={initialValues}
         validationSchema={schema}
-        onSubmit={(values, actions) => {
+        onSubmit={async (values, actions) => {
           const vals = { ...values };
           actions.resetForm();
-          fetch("http://localhost:4000/auth/login", {
+          await fetch("http://localhost:4001/login", {
             method: "POST",
-            // credentials: "include",
             headers: {
+              Accept: "application/json",
               "Content-Type": "application/json",
             },
             body: JSON.stringify(vals),
           })
             .catch((err) => {
-              return;
+              return console.log(err);
             })
             .then((res) => {
               if (!res || !res.ok || res.status >= 400) {
@@ -59,11 +60,11 @@ const SignIn = () => {
               return res.json();
             })
             .then((data) => {
-              if (!data) return;
+              if (!data) return alert("Usuário não encontrado");
               setUser({ ...data });
               if (data.status) {
                 setError(data.status);
-              } else if (data.loggedIn) {
+              } else if (data) {
                 navigate("/");
               }
             });

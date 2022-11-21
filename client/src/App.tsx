@@ -7,23 +7,29 @@ import Friends from "./pages/Friends";
 import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";
 import { AiOutlineArrowLeft } from "react-icons/ai";
-import PrivateRoutes from "./pages/Auth/PrivateRoutes";
+import PrivateRoutes from "./components/PrivateRoutes";
+import UserContext from "./components/AccountContext";
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="login" element={<SignIn />} />
-        <Route path="register" element={<SignUp Icon={AiOutlineArrowLeft} />} />
-        {/* <Route element={<PrivateRoutes />}> */}
+      <UserContext>
+        <Routes>
+          <Route path="login" element={<SignIn />} />
+          <Route
+            path="register"
+            element={<SignUp Icon={AiOutlineArrowLeft} />}
+          />
+          {/* <Route element={<PrivateRoutes />}> */}
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="contact" element={<Contact />} />
             <Route path="movies" element={<Movies />} />
             <Route path="friends" element={<Friends />} />
           </Route>
-        {/* </Route> */}
-      </Routes>
+          {/* </Route> */}
+        </Routes>
+      </UserContext>
     </BrowserRouter>
   );
 }

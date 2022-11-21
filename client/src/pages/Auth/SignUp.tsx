@@ -1,9 +1,10 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useContext, useState } from "react";
 import { BsLightbulbFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import Logo from "../../assets/Logo.png";
+import { AccountContext } from "../../components/AccountContext";
 
 interface Props {
   Icon: React.ElementType;
@@ -13,7 +14,7 @@ const SignUp: FunctionComponent<Props> = ({ Icon }) => {
   const [darkToggle, setDarkToggle] = useState(false);
   const navigate = useNavigate();
   const [error, setError] = useState(null);
-  const [user, setUser] = useState({ loggedIn: null });
+  const { setUser } = useContext(AccountContext);
 
   const schema = yup.object({
     username: yup
@@ -42,20 +43,19 @@ const SignUp: FunctionComponent<Props> = ({ Icon }) => {
       <Formik
         initialValues={initialValues}
         validationSchema={schema}
-        onSubmit={(values, actions) => {
-          alert(JSON.stringify(values, null, 2));
+        onSubmit={async (values, actions) => {
           const vals = { ...values };
           actions.resetForm();
-          fetch("http://localhost:4000/auth/signup", {
+          await fetch("http://localhost:4001/register", {
             method: "POST",
-            // credentials: "include",
             headers: {
+              Accept: "application/json",
               "Content-Type": "application/json",
             },
             body: JSON.stringify(vals),
           })
             .catch((err) => {
-              return;
+              return console.log(err);
             })
             .then((res) => {
               if (!res || !res.ok || res.status >= 400) {
@@ -64,13 +64,8 @@ const SignUp: FunctionComponent<Props> = ({ Icon }) => {
               return res.json();
             })
             .then((data) => {
-              if (!data) return;
               setUser({ ...data });
-              if (data.status) {
-                setError(data.status);
-              } else if (data.loggedIn) {
-                navigate("/");
-              }
+              navigate("/login");
             });
         }}
       >
