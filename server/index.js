@@ -10,7 +10,7 @@ require("dotenv").config();
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://localhost:5173",
     credentials: "true",
   },
 });
@@ -18,7 +18,7 @@ const io = new Server(server, {
 app.use(helmet());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "http://localhost:5173",
     credentials: "true",
   })
 );
@@ -32,8 +32,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.ENVIRONMENT === "production",
+      secure: process.env.ENVIRONMENT === "production" ? "true" : "auto",
       httpOnly: true,
+      expires: 1000 * 60 * 60 * 24 * 7,
       sameSite: process.env.ENVIRONMENT === "production" ? "none" : "lax",
     },
   })
