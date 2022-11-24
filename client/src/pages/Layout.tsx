@@ -1,15 +1,15 @@
-import { useState } from "react"
-import { Link, Outlet } from "react-router-dom"
-import { BsLightbulbFill } from "react-icons/bs"
-import Logo from "../assets/Logo.png"
+import { useState } from "react";
+import { Link, Outlet } from "react-router-dom";
+import { BsLightbulbFill } from "react-icons/bs";
+import Logo from "../assets/Logo.png";
 
 const Layout = () => {
-  const [darkToggle, setDarkToggle] = useState(false)
-  const [isOpen, setOpen] = useState(false)
+  const [darkToggle, setDarkToggle] = useState(false);
+  const [isOpen, setOpen] = useState(false);
 
   const handleDropDown = () => {
-    setOpen(!isOpen)
-  }
+    setOpen(!isOpen);
+  };
 
   return (
     <>
@@ -60,8 +60,8 @@ const Layout = () => {
                   type="button"
                   className="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5"
                   onClick={() => {
-                    setDarkToggle(!darkToggle)
-                    setOpen(false)
+                    setDarkToggle(!darkToggle);
+                    setOpen(false);
                   }}
                 >
                   <BsLightbulbFill className="m-0 p-0 text-xl" />
@@ -155,7 +155,7 @@ const Layout = () => {
       </div>
       <Outlet />
     </>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

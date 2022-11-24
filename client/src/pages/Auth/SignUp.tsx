@@ -1,10 +1,10 @@
+import axios from "axios";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import React, { FunctionComponent, useContext, useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { BsLightbulbFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import Logo from "../../assets/Logo.png";
-import { AccountContext } from "../../components/AccountContext";
 
 interface Props {
   Icon: React.ElementType;
@@ -12,16 +12,16 @@ interface Props {
 
 const SignUp: FunctionComponent<Props> = ({ Icon }) => {
   const [darkToggle, setDarkToggle] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [register, setRegister] = useState(false);
   const navigate = useNavigate();
-  const [error, setError] = useState(null);
-  const { setUser } = useContext(AccountContext);
 
   const schema = yup.object({
-    username: yup
+    email: yup
       .string()
-      .required("Username required!")
-      .min(4, "Username too short")
-      .max(28, "Username too long"),
+      .email("Invalid e-mail")
+      .required("Please enter the field"),
     password: yup
       .string()
       .required("Password required!")
@@ -30,7 +30,7 @@ const SignUp: FunctionComponent<Props> = ({ Icon }) => {
   });
 
   const initialValues = {
-    username: "",
+    email: "",
     password: "",
   };
 
@@ -38,36 +38,36 @@ const SignUp: FunctionComponent<Props> = ({ Icon }) => {
     <p className="text-red-500 mt-2">{message}</p>
   );
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const configuration = {
+      method: "post",
+      url: "http://localhost:4001/register",
+      data: {
+        email,
+        password,
+      },
+    };
+
+    axios(configuration)
+      .then((result) => {
+        console.log(result)
+        setRegister(true);
+      })
+      .catch((error) => {
+        error = new Error();
+      });
+
+    navigate("/login");
+  };
+
   return (
     <div className={`${darkToggle && "dark"}`}>
       <Formik
         initialValues={initialValues}
         validationSchema={schema}
-        onSubmit={async (values, actions) => {
-          const vals = { ...values };
-          actions.resetForm();
-          await fetch("http://localhost:4001/register", {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(vals),
-          })
-            .catch((err) => {
-              return console.log(err);
-            })
-            .then((res) => {
-              if (!res || !res.ok || res.status >= 400) {
-                return;
-              }
-              return res.json();
-            })
-            .then((data) => {
-              setUser({ ...data });
-              navigate("/login");
-            });
-        }}
+        onSubmit={(e) => handleSubmit(e)}
       >
         <Form>
           <div className="absolute right-0 p-2">
@@ -82,6 +82,7 @@ const SignUp: FunctionComponent<Props> = ({ Icon }) => {
               <BsLightbulbFill className="m-0 p-0 text-xl" />
             </button>
           </div>
+
           <div className="absolute p-2">
             <img
               src={Logo}
@@ -99,15 +100,17 @@ const SignUp: FunctionComponent<Props> = ({ Icon }) => {
               </h3>
               <div className="mt-4">
                 <div>
-                  <label className="text-white dark:text-black">Username</label>
+                  <label className="text-white dark:text-black">Email</label>
                   <Field
-                    name="username"
-                    type="text"
-                    placeholder="Enter username"
+                    name="email"
+                    type="email"
+                    placeholder="Enter email"
                     className="w-full px-8 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600 bg-transparent text-white dark:text-black"
                     autoComplete="off"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
-                  <ErrorMessage name="username" render={renderError} />
+                  <ErrorMessage name="email" render={renderError} />
                 </div>
                 <div className="mt-4">
                   <label className="text-white dark:text-black">Password</label>
@@ -117,6 +120,8 @@ const SignUp: FunctionComponent<Props> = ({ Icon }) => {
                     placeholder="Enter password"
                     className="w-full px-8 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600 bg-transparent text-white dark:text-black"
                     autoComplete="off"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <ErrorMessage name="password" render={renderError} />
                 </div>
@@ -125,17 +130,23 @@ const SignUp: FunctionComponent<Props> = ({ Icon }) => {
                 <button
                   className="px-6 py-2 mt-4 mr-2 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
                   type="submit"
+                  onClick={(e) => handleSubmit(e)}
                 >
                   Create Account
                 </button>
-                <button
-                  className="flex items-center gap-2 px-4 py-2 mt-4 text-white bg-gray-700 rounded-lg hover:bg-gray-800"
+                <span
+                  className="flex items-center gap-2 ml-8 py-2 mt-4 text-white rounded-lg hover:text-gray-400 cursor-pointer"
                   onClick={() => navigate("/login")}
                 >
-                  {Icon && <Icon />}
-                  Back
-                </button>
+                  Already have an account?
+                </span>
               </div>
+
+              {register ? (
+                <p className="text-green-500">
+                  You Are Registered Successfully
+                </p>
+              ) : null}
             </div>
           </div>
         </Form>

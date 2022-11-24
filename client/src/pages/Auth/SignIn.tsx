@@ -1,23 +1,23 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { BsLightbulbFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import Logo from "../../assets/Logo.png";
-import { AccountContext } from "../../components/AccountContext";
+import axios from "axios";
 
 const SignIn = () => {
   const [darkToggle, setDarkToggle] = useState(false);
   const navigate = useNavigate();
-  const [error, setError] = useState(null);
-  const { setUser } = useContext(AccountContext);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [login, setLogin] = useState(false);
 
   const schema = yup.object({
-    username: yup
+    email: yup
       .string()
-      .required("Username required!")
-      .min(4, "Username too short")
-      .max(28, "Username too long"),
+      .email("Enter an valid email")
+      .required("Email required"),
     password: yup
       .string()
       .required("Password required!")
@@ -26,7 +26,7 @@ const SignIn = () => {
   });
 
   const initialValues = {
-    username: "",
+    email: "",
     password: "",
   };
 
@@ -34,41 +34,29 @@ const SignIn = () => {
     <p className="text-red-500 mt-2">{message}</p>
   );
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const configuration = {
+      method: "post",
+      url: "http://localhost:4001/login",
+      data: {
+        email,
+        password,
+      },
+    };
+
+    axios(configuration)
+      .then((result) => setLogin(true))
+      .catch((error) => (error = new Error()));
+  };
+
   return (
     <div className={`${darkToggle && "dark"}`}>
       <Formik
         initialValues={initialValues}
         validationSchema={schema}
-        onSubmit={async (values, actions) => {
-          const vals = { ...values };
-          actions.resetForm();
-          await fetch("http://localhost:4001/login", {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(vals),
-          })
-            .catch((err) => {
-              return console.log(err);
-            })
-            .then((res) => {
-              if (!res || !res.ok || res.status >= 400) {
-                return;
-              }
-              return res.json();
-            })
-            .then((data) => {
-              if (!data) return alert("Usuário não encontrado");
-              setUser({ ...data });
-              if (data.status) {
-                setError(data.status);
-              } else if (data) {
-                navigate("/");
-              }
-            });
-        }}
+        onSubmit={(e) => handleSubmit(e)}
       >
         <Form>
           <div className="absolute right-0 p-2">
@@ -83,15 +71,9 @@ const SignIn = () => {
               <BsLightbulbFill className="m-0 p-0 text-xl" />
             </button>
           </div>
+
           <div className="absolute p-2">
-            <img
-              src={Logo}
-              alt="logo"
-              className="h-14 cursor-pointer"
-              onClick={() => {
-                navigate("/");
-              }}
-            />
+            <img src={Logo} alt="logo" className="h-14 cursor-pointer" />
           </div>
           <div className="flex items-center justify-center min-h-screen bg-slate-900 dark:bg-gray-100">
             <div className="px-8 py-6 mt-4 text-left">
@@ -100,24 +82,28 @@ const SignIn = () => {
               </h3>
               <div className="mt-4">
                 <div>
-                  <label className="text-white dark:text-black">Username</label>
+                  <label className="text-white dark:text-black">Email</label>
                   <Field
-                    name="username"
-                    type="text"
-                    placeholder="Enter username"
+                    name="email"
+                    type="email"
+                    placeholder="Enter email"
                     className="w-full px-8 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600 bg-transparent text-white dark:text-black"
                     autoComplete="off"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
-                  <ErrorMessage name="username" render={renderError} />
+                  <ErrorMessage name="email" render={renderError} />
                 </div>
                 <div className="mt-4">
                   <label className="text-white dark:text-black">Password</label>
                   <Field
                     name="password"
                     type="password"
-                    placeholder="Enter password"
+                    placeholder="Password"
                     className="w-full px-8 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600 bg-transparent text-white dark:text-black"
                     autoComplete="off"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <ErrorMessage name="password" render={renderError} />
                 </div>
@@ -126,6 +112,7 @@ const SignIn = () => {
                 <button
                   className="px-6 py-2 mt-4 mr-2 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
                   type="submit"
+                  onClick={(e) => handleSubmit(e)}
                 >
                   Log In
                 </button>
@@ -140,6 +127,7 @@ const SignIn = () => {
           </div>
         </Form>
       </Formik>
+      {/* Alerts  */}
     </div>
   );
 };
