@@ -11,11 +11,19 @@ const Layout = () => {
     setOpen(!isOpen);
   };
 
+  function loggedIn(req, res, next) {
+    if (req.isAuthenticated()) {
+      next();
+    } else {
+      res.redirect("/login");
+    }
+  }
+
   return (
     <>
       <div className={`${darkToggle && "dark"}`}>
         <nav
-          className={`px-2 bg-white dark:bg-slate-800 border-gray-200  md:dark:bg-slate-900 dark:border-gray-700`}
+          className={`px-2 bg-white dark:bg-slate-900 border-gray-200  md:dark:bg-slate-900 dark:border-gray-700 `}
         >
           <div className="container flex flex-wrap items-center justify-between mx-auto">
             <a href="#" className="flex items-center">

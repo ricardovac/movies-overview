@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import Logo from "../../assets/Logo.png";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SignIn = () => {
   const [darkToggle, setDarkToggle] = useState(false);
@@ -39,16 +41,23 @@ const SignIn = () => {
 
     const configuration = {
       method: "post",
-      url: "http://localhost:4001/login",
+      url: "http://localhost:4000/login",
       data: {
         email,
         password,
       },
     };
 
+    const notify = () => toast.error("Usuário não encontrado!");
+
     axios(configuration)
-      .then((result) => setLogin(true))
-      .catch((error) => (error = new Error()));
+      .then((result) => {
+        setLogin(true), navigate("/");
+      })
+      .catch((error) => {
+        console.log(error);
+        notify();
+      });
   };
 
   return (
@@ -71,7 +80,18 @@ const SignIn = () => {
               <BsLightbulbFill className="m-0 p-0 text-xl" />
             </button>
           </div>
-
+          <ToastContainer
+            position="bottom-left"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />
           <div className="absolute p-2">
             <img src={Logo} alt="logo" className="h-14 cursor-pointer" />
           </div>

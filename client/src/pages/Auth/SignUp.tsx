@@ -43,7 +43,7 @@ const SignUp: FunctionComponent<Props> = ({ Icon }) => {
 
     const configuration = {
       method: "post",
-      url: "http://localhost:4001/register",
+      url: "http://localhost:4000/register",
       data: {
         email,
         password,
