@@ -1,108 +1,132 @@
-require("dotenv").config();
-require("./config/database").connect();
-const bcrypt = require("bcrypt");
 const express = require("express");
-const jwt = require("jsonwebtoken");
-const cors = require("cors");
-
 const app = express();
+const bodyParser = require("body-parser");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-app.use(cors());
-app.use(express.json());
+// require database connection
+const dbConnect = require("./db/dbConnect");
+const User = require("./db/userModel");
+const auth = require("./auth");
 
-const User = require("./model/user");
-const auth = require("./middleware/auth");
+// execute database connection
+dbConnect();
 
-/*
-- Get user input.
-- Validate user input.
-- Validate if the user already exists.
-- Encrypt the user password.
-- Create a user in our database.
-- And finally, create a signed JWT token.
-*/
-app.post("/register", async (req, res) => {
-  try {
-    const { username, password } = req.body;
+// Curb Cores Error by adding a header here
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+  );
+  next();
+});
 
-    // Validado todas as entradas.
-    if (!(username && password)) {
-      res.status(400).send("All input is required");
-    }
+// body parser configuration
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-    // Checando se já existe um usuario com o mesmo nome.
-    const oldUser = await User.findOne({ username });
+app.get("/", (request, response, next) => {
+  response.json({ message: "Hey! This is your server response!" });
+  next();
+});
 
-    if (oldUser) {
-      return res.status(409).send("User Already Exist. Please Login");
-    }
+// register endpoint
+app.post("/register", (request, response) => {
+  // hash the password
+  bcrypt
+    .hash(request.body.password, 10)
+    .then((hashedPassword) => {
+      // create a new user instance and collect the data
+      const user = new User({
+        email: request.body.email,
+        password: hashedPassword,
+      });
 
-    // Encriptando a senha.
-    encryptedPassword = await bcrypt.hash(password, 10);
-
-    const user = await User.create({
-      username,
-      password: encryptedPassword,
+      // save the new user
+      user
+        .save()
+        // return success if the new user is added to the database successfully
+        .then((result) => {
+          response.status(201).send({
+            message: "User Created Successfully",
+            result,
+          });
+        })
+        // catch erroe if the new user wasn't added successfully to the database
+        .catch((error) => {
+          response.status(500).send({
+            message: "Error creating user",
+            error,
+          });
+        });
+    })
+    // catch error if the password hash isn't successful
+    .catch((e) => {
+      response.status(500).send({
+        message: "Password was not hashed successfully",
+        e,
+      });
     });
-
-    // Criando token.
-    const token = jwt.sign(
-      { user_id: user.id, username },
-      process.env.TOKEN_KEY,
-      { expiresIn: "2h" }
-    );
-
-    // Salvando o token
-    user.token = token;
-
-    res.status(201).json(user);
-  } catch (err) {
-    console.log(err);
-  }
 });
 
-/* 
-- Get user input.
-- Validate user input.
-- Validate if the user exists.
-- Verify user password against the password we saved earlier in our database.
-And finally, create a signed JWT token
-*/
-app.post("/login", async (req, res) => {
-  try {
-    const { username, password } = req.body;
+// login endpoint
+app.post("/login", (request, response) => {
+  // check if email exists
+  User.findOne({ email: request.body.email })
 
-    // Validando a entrada.
-    if (!(username, password)) {
-      res.status(400).send("All input is required");
-    }
+    // if email exists
+    .then((user) => {
+      // compare the password entered and the hashed password found
+      bcrypt
+        .compare(request.body.password, user.password)
 
-    // Validando se o usuario existe no banco de dados.
-    const user = await User.findOne({ username });
+        // if the passwords match
+        .then((passwordCheck) => {
+          // check if password matches
+          if (!passwordCheck) {
+            return response.status(400).send({
+              message: "Passwords does not match",
+              error,
+            });
+          }
 
-    if (user && (await bcrypt.compare(password, user.password))) {
-      const token = jwt.sign(
-        { user_id: user._id, username },
-        process.env.TOKEN_KEY,
-        {
-          expiresIn: "2h",
-        }
-      );
+          //   create JWT token
+          const token = jwt.sign(
+            {
+              userId: user._id,
+              userEmail: user.email,
+            },
+            "RANDOM-TOKEN",
+            { expiresIn: "24h" }
+          );
 
-      user.token = token;
-
-      res.status(200).json(user);
-    } else {
-      console.log("Usuário não encontrado");
-      res.status(404).json(user);
-    }
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-app.post("/welcome", auth, (req, res) => {
-  res.status(200).send("Welcome");
+          //   return success response
+          response.status(200).send({
+            message: "Login Successful",
+            email: user.email,
+            token,
+          });
+        })
+        // catch error if password do not match
+        .catch((error) => {
+          response.status(400).send({
+            message: "Passwords does not match",
+            error,
+          });
+        });
+    })
+    // catch error if email does not exist
+    .catch((e) => {
+      response.status(404).send({
+        message: "Email not found",
+        e,
+      });
+    });
 });
 
 module.exports = app;
