@@ -1,14 +1,41 @@
-import React, { SetStateAction, useEffect, useState } from "react";
-import axios from "axios";
-import { BsStarFill } from "react-icons/bs";
-import typesApi from "../types/omdApiT";
+import { useEffect, useState } from "react";
 import MovieList from "../components/MovieList";
+import MovieListSearch from "../components/MovieListSearch";
+import SearchInput from "../components/SearchInput";
 
 const Home = () => {
+  const [searchMovies, setSearchMovies] = useState([]);
   const [movies, setMovies] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+
+  // search requests
+  const getMovieSearchRequest = async (searchValue) => {
+    const url = `http://www.omdbapi.com/?s=${searchValue}&apikey=86d1516d`;
+
+    const response = await fetch(url);
+    const responseJson = await response.json();
+
+    if (responseJson.Search) {
+      setSearchMovies(responseJson.Search);
+    }
+  };
+
+  useEffect(() => {
+    getMovieSearchRequest(searchValue);
+  }, [searchValue]);
+
+  // random requests
+  function pad(number, length) {
+    var str = "" + number;
+    while (str.length < length) {
+      str = "0" + str;
+    }
+    return str;
+  }
 
   const getMovieRequest = async () => {
-    const url = `http://www.omdbapi.com/?s=star wars&apikey=86d1516d`;
+    var movie = pad(Math.floor(Math.random() * 2155529 + 1), 7);
+    const url = `http://www.omdbapi.com/?apikey=86d1516d&i=tt${movie}`;
 
     const response = await fetch(url);
     const responseJson = await response.json();
@@ -23,10 +50,13 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
-      <div className="flex flex-wrap justify-center my-8 filter-filter">
+    <div className="flex-row">
+      <SearchInput searchValue={searchValue} setSearchValue={setSearchValue} />
+      <div className="flex flex-wrap justify-center filter-filter">
+        <MovieListSearch movies={searchMovies} />
         <MovieList movies={movies} />
       </div>
+      <hr />
     </div>
   );
 };

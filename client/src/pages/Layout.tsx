@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { BsLightbulbFill } from "react-icons/bs";
 import Logo from "../assets/Logo.png";
+import SearchInput from "../components/SearchInput";
 
 const Layout = () => {
   const [darkToggle, setDarkToggle] = useState(false);
   const [isOpen, setOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const [movies, setMovies] = useState([]);
 
   const handleDropDown = () => {
     setOpen(!isOpen);
