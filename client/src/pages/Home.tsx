@@ -10,7 +10,8 @@ const Home = () => {
 
   // search requests
   const getMovieSearchRequest = async (searchValue) => {
-    const url = `http://www.omdbapi.com/?s=${searchValue}&apikey=86d1516d`;
+    // const url = `http://www.omdbapi.com/?s=${searchValue}&apikey=86d1516d&page=1`;
+    const url = `http://www.omdbapi.com/?s=${searchValue}&apikey=86d1516d&page=1`;
 
     const response = await fetch(url);
     const responseJson = await response.json();
@@ -24,24 +25,18 @@ const Home = () => {
     getMovieSearchRequest(searchValue);
   }, [searchValue]);
 
-  // random requests
-  function pad(number, length) {
-    var str = "" + number;
-    while (str.length < length) {
-      str = "0" + str;
-    }
-    return str;
-  }
-
+  // Popular movies
   const getMovieRequest = async () => {
-    var movie = pad(Math.floor(Math.random() * 2155529 + 1), 7);
-    const url = `http://www.omdbapi.com/?apikey=86d1516d&i=tt${movie}`;
+    const url = `https://api.themoviedb.org/3/movie/popular?api_key=842da3f310c6c6938c121df031daad63&language=en-US&page=1`;
 
     const response = await fetch(url);
     const responseJson = await response.json();
+    console.log(responseJson.results);
 
-    if (responseJson.Search) {
-      setMovies(responseJson.Search);
+    if (responseJson) {
+      setMovies(responseJson.results);
+    } else {
+      null;
     }
   };
 
@@ -54,9 +49,14 @@ const Home = () => {
       <SearchInput searchValue={searchValue} setSearchValue={setSearchValue} />
       <div className="flex flex-wrap justify-center filter-filter">
         <MovieListSearch movies={searchMovies} />
-        <MovieList movies={movies} />
       </div>
       <hr />
+      <div className="flex justify-center p-2">
+        <h1 className="text-xl">Popular movies</h1>
+      </div>
+      <div className="flex flex-wrap justify-center filter-filter">
+        <MovieList movies={movies} />
+      </div>
     </div>
   );
 };

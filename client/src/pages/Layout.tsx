@@ -26,7 +26,7 @@ const Layout = () => {
     <>
       <div className={`${darkToggle && "dark"}`}>
         <nav
-          className={`px-2 bg-white dark:bg-slate-900 border-gray-200  md:dark:bg-slate-900 dark:border-gray-700 `}
+          className={`px-2 bg-slate-900 dark:bg-gray-50 border-gray-200  md:dark:bg-gray-50 dark:border-gray-700 `}
         >
           <div className="container flex flex-wrap items-center justify-between mx-auto">
             <a href="#" className="flex items-center">
@@ -35,7 +35,7 @@ const Layout = () => {
                 className="h-6 mr-3 sm:h-10"
                 alt="Flowbite Logo"
               />
-              <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
+              <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-black text-white">
                 SatFlix
               </span>
             </a>
@@ -65,11 +65,11 @@ const Layout = () => {
               className="hidden w-full md:block md:w-auto"
               id="navbar-multi-level"
             >
-              <ul className="flex flex-col justify-center items-center p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-slate-900 dark:border-gray-700">
+              <ul className="flex flex-col justify-center items-center p-4 mt-4 border border-gray-100 rounded-lg bg-slate-900 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-slate-900 dark:bg-gray-50 md:dark:bg-gray-50 dark:border-gray-700">
                 <button
                   id="theme-toggle"
                   type="button"
-                  className="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5"
+                  className="text-gray-400 dark:text-gray-500 hover:bg-gray-700 dark:hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-700 dark:focus:ring-gray-200 rounded-lg text-sm p-2.5"
                   onClick={() => {
                     setDarkToggle(!darkToggle);
                     setOpen(false);
@@ -80,7 +80,7 @@ const Layout = () => {
                 <li>
                   <Link
                     to="/"
-                    className="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-white dark:bg-blue-600 md:dark:bg-transparent"
+                    className="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 md:dark:text-blue-700 dark:bg-blue-600 md:dark:bg-transparent"
                     aria-current="page"
                   >
                     Home
@@ -138,23 +138,23 @@ const Layout = () => {
                 <li>
                   <Link
                     to="friends"
-                    className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                    className="block py-2 pl-3 pr-4 text-gray-400 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-white md:p-0 dark:text-gray-700 md:dark:hover:text-blue-700 dark:hover:bg-blue-700 dark:hover:text-white md:dark:hover:bg-transparent"
                   >
                     Friends
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="/movies"
-                    className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                    to="movies"
+                    className="block py-2 pl-3 pr-4 text-gray-400 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-white md:p-0 dark:text-gray-700 md:dark:hover:text-blue-700 dark:hover:bg-blue-700 dark:hover:text-white md:dark:hover:bg-transparent"
                   >
                     Movies
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="/contact"
-                    className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                    to="contact"
+                    className="block py-2 pl-3 pr-4 text-gray-400 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-white md:p-0 dark:text-gray-700 md:dark:hover:text-blue-700 dark:hover:bg-blue-700 dark:hover:text-white md:dark:hover:bg-transparent"
                   >
                     Contact
                   </Link>
