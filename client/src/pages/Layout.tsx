@@ -1,14 +1,31 @@
 import { useEffect, useState } from "react";
-import { Link, Outlet } from "react-router-dom";
 import { BsLightbulbFill } from "react-icons/bs";
+import { Link, Outlet } from "react-router-dom";
 import Logo from "../assets/Logo.png";
-import SearchInput from "../components/SearchInput";
 
 const Layout = () => {
   const [darkToggle, setDarkToggle] = useState(false);
   const [isOpen, setOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
-  const [movies, setMovies] = useState([]);
+  const [categories, setCategories] = useState(false);
+  const [movieCategories, setMoviesCategories] = useState([]);
+
+  const getMovieRequest = async () => {
+    const url = `https://api.themoviedb.org/3/genre/movie/list?api_key=842da3f310c6c6938c121df031daad63&language=en-US`;
+
+    const response = await fetch(url);
+    const responseJson = await response.json();
+    console.log(responseJson.genres);
+
+    if (responseJson) {
+      setMoviesCategories(responseJson.genres);
+    } else {
+      null;
+    }
+  };
+
+  useEffect(() => {
+    getMovieRequest();
+  }, []);
 
   const handleDropDown = () => {
     setOpen(!isOpen);
@@ -26,7 +43,9 @@ const Layout = () => {
     <>
       <div className={`${darkToggle && "dark"}`}>
         <nav
-          className={`px-2 bg-slate-900 dark:bg-gray-50 border-gray-200  md:dark:bg-gray-50 dark:border-gray-700 `}
+          className={`px-2 bg-slate-900 dark:bg-gray-50 border-gray-200  md:dark:bg-gray-50 dark:border-gray-700 ${
+            categories ? null : null
+          } `}
         >
           <div className="container flex flex-wrap items-center justify-between mx-auto">
             <a href="#" className="flex items-center">
@@ -136,12 +155,29 @@ const Layout = () => {
                   </div>
                 </li>
                 <li>
-                  <Link
-                    to="friends"
-                    className="block py-2 pl-3 pr-4 text-gray-400 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-white md:p-0 dark:text-gray-700 md:dark:hover:text-blue-700 dark:hover:bg-blue-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                  >
-                    Friends
-                  </Link>
+                  <div className="dropdown">
+                    <button
+                      className="flex justify-center items-center py-2 pl-3 pr-4 text-gray-400 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-white md:p-0 dark:text-gray-700 md:dark:hover:text-blue-700 dark:hover:bg-blue-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                      onClick={() => setCategories(!categories)}
+                    >
+                      Categories
+                      <svg
+                        className="ml-2 w-4 h-4"
+                        aria-hidden="true"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M19 9l-7 7-7-7"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
                 </li>
                 <li>
                   <Link
@@ -163,6 +199,28 @@ const Layout = () => {
             </div>
           </div>
         </nav>
+        {categories ? (
+          <div>
+            <hr className="dark:border-slate-200 border-slate-900" />
+            <div className="text-white bg-[#0b1226] dark:bg-white flex justify-center">
+              <nav className="w-[1000px]">
+                <ul className="">
+                  <li className="flex items-center flex-wrap">
+                    {movieCategories.map((categories) => (
+                      <a
+                        key={categories.id}
+                        href={categories.name.toLowerCase()}
+                        className="py-[22px] pl-[10px] w-[20%] dark:text-[#0b1226] text-gray-200 hover:text-white flex justify-center tracking-wide hover:tracking-normal ease-in duration-100"
+                      >
+                        {categories.name}
+                      </a>
+                    ))}
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        ) : null}
       </div>
       <Outlet />
     </>

@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";
 import Contact from "./pages/Contact";
-import Friends from "./pages/Friends";
+import Categories from "./pages/Categories";
 import Home from "./pages/Home";
 import Layout from "./pages/Layout";
 import Movies from "./pages/Movies";
@@ -18,7 +18,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="contact" element={<Contact />} />
           <Route path="movies" element={<Movies />} />
-          <Route path="friends" element={<Friends />} />
+          <Route path="categories" element={<Categories />} />
         </Route>
       </Routes>
     </BrowserRouter>

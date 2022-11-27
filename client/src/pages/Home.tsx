@@ -10,7 +10,6 @@ const Home = () => {
 
   // search requests
   const getMovieSearchRequest = async (searchValue) => {
-    // const url = `http://www.omdbapi.com/?s=${searchValue}&apikey=86d1516d&page=1`;
     const url = `http://www.omdbapi.com/?s=${searchValue}&apikey=86d1516d&page=1`;
 
     const response = await fetch(url);
@@ -31,7 +30,6 @@ const Home = () => {
 
     const response = await fetch(url);
     const responseJson = await response.json();
-    console.log(responseJson.results);
 
     if (responseJson) {
       setMovies(responseJson.results);

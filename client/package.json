@@ -11,6 +11,7 @@
   "dependencies": {
     "@types/react-icons": "^3.0.0",
     "axios": "^1.2.0",
+    "dotenv": "^16.0.3",
     "formik": "^2.2.9",
     "react": "^18.2.0",
     "react-cookie": "^4.1.1",
