@@ -50,9 +50,9 @@ const Home = () => {
       </div>
       <hr />
       <div className="flex justify-center p-2">
-        <h1 className="text-xl">Popular movies</h1>
+        <h1 className="text-xl">Popular movies - New</h1>
       </div>
-      <div className="flex flex-wrap justify-center filter-filter">
+      <div className="flex flex-wrap justify-center text-center filter-filter">
         <MovieList movies={movies} />
       </div>
     </div>

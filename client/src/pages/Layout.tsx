@@ -14,7 +14,6 @@ const Layout = () => {
 
     const response = await fetch(url);
     const responseJson = await response.json();
-    console.log(responseJson.genres);
 
     if (responseJson) {
       setMoviesCategories(responseJson.genres);
@@ -31,14 +30,6 @@ const Layout = () => {
     setOpen(!isOpen);
   };
 
-  function loggedIn(req, res, next) {
-    if (req.isAuthenticated()) {
-      next();
-    } else {
-      res.redirect("/login");
-    }
-  }
-
   return (
     <>
       <div className={`${darkToggle && "dark"}`}>
@@ -48,7 +39,7 @@ const Layout = () => {
           } `}
         >
           <div className="container flex flex-wrap items-center justify-between mx-auto">
-            <a href="#" className="flex items-center">
+            <a href="/" className="flex items-center">
               <img
                 src={Logo}
                 className="h-6 mr-3 sm:h-10"
@@ -209,7 +200,7 @@ const Layout = () => {
                     {movieCategories.map((categories) => (
                       <a
                         key={categories.id}
-                        href={categories.name.toLowerCase()}
+                        href={`/categories/${categories.name.toLowerCase()}`}
                         className="py-[22px] pl-[10px] w-[20%] dark:text-[#0b1226] text-gray-200 hover:text-white flex justify-center tracking-wide hover:tracking-normal ease-in duration-100"
                       >
                         {categories.name}
