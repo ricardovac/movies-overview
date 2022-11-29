@@ -22,6 +22,7 @@ const Home = () => {
 
   useEffect(() => {
     getMovieSearchRequest(searchValue);
+    document.title = "SatFlix | Welcome";
   }, [searchValue]);
 
   // Popular movies

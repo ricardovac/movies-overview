@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import omdApiT from "../types/omdApiT";
+import { omdApiT } from "../shared/omdApiT";
 
 const MovieListSearch = (props) => {
   return (

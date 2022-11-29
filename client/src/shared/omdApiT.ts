@@ -1,4 +1,4 @@
-export default interface RootObject {
+export type omdApiT = {
   Title: string;
   Year: string;
   imdbID: string;

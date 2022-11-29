@@ -1,4 +1,4 @@
-export type dbMoviesT = {
+export interface dbMoviesT {
   adult: boolean;
   backdrop_path: string;
   belongs_to_collection?: any;

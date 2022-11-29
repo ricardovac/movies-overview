@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { BsLightbulbFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
@@ -52,7 +52,7 @@ const SignUp: FunctionComponent<Props> = ({ Icon }) => {
 
     axios(configuration)
       .then((result) => {
-        console.log(result)
+        console.log(result);
         setRegister(true);
       })
       .catch((error) => {
@@ -61,6 +61,10 @@ const SignUp: FunctionComponent<Props> = ({ Icon }) => {
 
     navigate("/login");
   };
+
+  useEffect(() => {
+    document.title = "SatFlix | Register";
+  });
 
   return (
     <div className={`${darkToggle && "dark"}`}>

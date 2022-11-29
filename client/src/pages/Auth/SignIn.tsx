@@ -1,5 +1,5 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsLightbulbFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
@@ -59,6 +59,10 @@ const SignIn = () => {
         notify();
       });
   };
+
+  useEffect(() => {
+    document.title = "SatFlix | Login";
+  });
 
   return (
     <div className={`${darkToggle && "dark"}`}>

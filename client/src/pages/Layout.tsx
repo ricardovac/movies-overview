@@ -8,6 +8,7 @@ const Layout = () => {
   const [isOpen, setOpen] = useState(false);
   const [categories, setCategories] = useState(false);
   const [movieCategories, setMoviesCategories] = useState([]);
+  const [effect, setEffect] = useState(false);
 
   const getMovieRequest = async () => {
     const url = `https://api.themoviedb.org/3/genre/movie/list?api_key=842da3f310c6c6938c121df031daad63&language=en-US`;
@@ -65,9 +66,9 @@ const Layout = () => {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  fill-rule="evenodd"
+                  fillRule="evenodd"
                   d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                  clip-rule="evenodd"
+                  clipRule="evenodd"
                 ></path>
               </svg>
             </button>
@@ -148,8 +149,14 @@ const Layout = () => {
                 <li>
                   <div className="dropdown">
                     <button
-                      className="flex justify-center items-center py-2 pl-3 pr-4 text-gray-400 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-white md:p-0 dark:text-gray-700 md:dark:hover:text-blue-700 dark:hover:bg-blue-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                      onClick={() => setCategories(!categories)}
+                      className={`${
+                        effect && "animate-wiggle"
+                      } flex justify-center items-center py-2 pl-3 pr-4 text-gray-400 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-white md:p-0 dark:text-gray-700 md:dark:hover:text-blue-700 dark:hover:bg-blue-700 dark:hover:text-white md:dark:hover:bg-transparent`}
+                      onClick={() => {
+                        setEffect(true);
+                        setCategories(!categories);
+                      }}
+                      onAnimationEnd={() => setEffect(false)}
                     >
                       Categories
                       <svg
@@ -200,8 +207,8 @@ const Layout = () => {
                     {movieCategories.map((categories) => (
                       <a
                         key={categories.id}
-                        href={`/categories/${categories.name.toLowerCase()}`}
-                        className="py-[22px] pl-[10px] w-[20%] dark:text-[#0b1226] text-gray-200 hover:text-white flex justify-center tracking-wide hover:tracking-normal ease-in duration-100"
+                        href={`/genre/${categories.id}`}
+                        className="py-[22px] pl-[10px] w-[20%] dark:text-[#0b1226] text-gray-200 hover:text-white flex justify-center tracking-wide hover:tracking-normal ease-in-out duration-150"
                       >
                         {categories.name}
                       </a>
@@ -214,6 +221,7 @@ const Layout = () => {
         ) : null}
       </div>
       <Outlet />
+      <div>Footer</div>
     </>
   );
 };
