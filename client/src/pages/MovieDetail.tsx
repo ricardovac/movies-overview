@@ -1,10 +1,11 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const MovieDetail = () => {
   const { id } = useParams();
   const [movies, setMovies] = useState<any>({});
+  const [torrent, setTorrent] = useState(null);
 
   useEffect(() => {
     const fetch = async () => {
@@ -45,6 +46,7 @@ const MovieDetail = () => {
               </div>
               <p className="text-gray-400 ">{movies.overview}</p>
             </div>
+
             <div className="flex flex-col gap-4">
               {movies.genres
                 ? movies.genres.map((item, i) => (
